@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using RecipeSystem;
 
 namespace RecipeWinForms
 {
@@ -25,19 +26,22 @@ namespace RecipeWinForms
 
         public void ShowForm(int recipeid)
         {
-            string sql = "select RecipeId, FirstName, LastName, Cuisine, RecipeName, Calories, DateDrafted, DatePublished, DateArchived, RecipeStatus, Picture" +
-                " from recipestandalone where RecipeId = " + recipeid.ToString();
-            //string sql = "select r.RecipeId, u.FirstName, u.LastName, c.Cuisine, r.RecipeName, r.Calories, r.DateDrafted, r.DatePublished, r.DateArchived, r.RecipeStatus, r.Picture" +
-            //    " from recipe r join users u on r.UserId = u.UserId join cuisine c on r.CuisineId = c.CuisineId where r.RecipeId = " + recipeid.ToString();
+            //string sql = "select RecipeId, FirstName, LastName, Cuisine, RecipeName, Calories, DateDrafted, DatePublished, DateArchived, RecipeStatus, Picture" +
+            //    " from recipestandalone where RecipeId = " + recipeid.ToString();
+            string sql = "select r.RecipeId, u.UserId, u.UserName, c.CuisineId, c.Cuisine, r.RecipeName, r.Calories, r.DateDrafted, r.DatePublished, r.DateArchived, r.RecipeStatus, r.Picture" +
+                " from recipe r join users u on r.UserId = u.UserId join cuisine c on r.CuisineId = c.CuisineId where r.RecipeId = " + recipeid.ToString();
             dtrecipe = SQLUtility.GetDataTable(sql);
             if (recipeid == 0)
             {
                 dtrecipe.Rows.Add();
             }
-            
-            WindowsFormsUtility.SetControlBinding(txtFirstName, dtrecipe);
-            WindowsFormsUtility.SetControlBinding(txtLastName, dtrecipe);
-            WindowsFormsUtility.SetControlBinding(txtCuisine, dtrecipe);
+
+            DataTable dtUser = Recipe.GetUserList();
+            WindowsFormsUtility.SetListBinding(lstUserName, dtUser, dtrecipe, "User");
+            //WindowsFormsUtility.SetControlBinding(txtLastName, dtrecipe);
+            //WindowsFormsUtility.SetControlBinding(lstCuisine, dtrecipe);
+            DataTable dtCuisine = Recipe.GetCuisineList();
+            WindowsFormsUtility.SetListBinding(lstCuisine, dtCuisine, dtrecipe, "Cuisine");
             WindowsFormsUtility.SetControlBinding(txtRecipeName, dtrecipe);
             WindowsFormsUtility.SetControlBinding(txtCalories, dtrecipe);
             WindowsFormsUtility.SetControlBinding(txtDateDrafted, dtrecipe);
@@ -64,10 +68,11 @@ namespace RecipeWinForms
 
             if (id > 0)
             {
-                sql = string.Join(Environment.NewLine, $"update recipestandalone set",
-                    $"FirstName = '{r["FirstName"]}',",
-                    $"LastName = '{r["LastName"]}',",
-                    $"Cuisine = '{r["Cuisine"]}',",
+                sql = string.Join(Environment.NewLine, $"update recipe set",
+                    //$"FirstName = '{r["FirstName"]}',",
+                    //$"LastName = '{r["LastName"]}',",
+                    $"UserId = '{r["UserId"]}',",
+                    $"CuisineId = '{r["CuisineId"]}',",
                     $"RecipeName = '{r["RecipeName"]}',",
                     $"Calories = '{r["Calories"]}',",
                     $"DateDrafted = '{r["DateDrafted"]}'",
@@ -76,9 +81,9 @@ namespace RecipeWinForms
             }
             else
             {
-                sql = "insert RecipeStandAlone(FirstName, LastName, Cuisine, RecipeName, Calories, DateDrafted)";//, DatePublished, DateArchived)"
-                //sql = "insert Recipe(UserId, CuisineId, RecipeName, Calories, DateDrafted) ";//, DatePublished, DateArchived) ";
-                sql += $"select '{r["FirstName"]}', '{r["LastName"]}', '{r["Cuisine"]}', '{r["RecipeName"]}', '{r["Calories"]}', '{r["DateDrafted"]}'";//, '{r["DatePublished"]}', '{r["DateArchived"]}'";
+                //sql = "insert RecipeStandAlone(FirstName, LastName, Cuisine, RecipeName, Calories, DateDrafted)";//, DatePublished, DateArchived)"
+                sql = "insert Recipe(UserId, CuisineId, RecipeName, Calories, DateDrafted) ";//, DatePublished, DateArchived) ";
+                sql += $"select '{r["UserId"]}', '{r["CuisineId"]}', '{r["RecipeName"]}', '{r["Calories"]}', '{r["DateDrafted"]}'";//, '{r["DatePublished"]}', '{r["DateArchived"]}'";
             }
             Debug.Print("-------------------");
             Debug.Print(sql);
@@ -88,7 +93,8 @@ namespace RecipeWinForms
         private void Delete()
         {
             int id = (int)dtrecipe.Rows[0]["RecipeId"];
-            string sql = "delete recipestandalone where RecipeId = " + id;
+            string sql = "delete recipe where RecipeId = " + id;
+            Debug.Print(sql);
             SQLUtility.ExecuteSQL(sql);
             this.Close();
         }
