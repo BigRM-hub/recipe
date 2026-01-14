@@ -45,8 +45,8 @@ namespace RecipeWinForms
             WindowsFormsUtility.SetControlBinding(txtRecipeName, dtrecipe);
             WindowsFormsUtility.SetControlBinding(txtCalories, dtrecipe);
             WindowsFormsUtility.SetControlBinding(txtDateDrafted, dtrecipe);
-            WindowsFormsUtility.SetControlBinding(txtDatePublished, dtrecipe);
-            WindowsFormsUtility.SetControlBinding(txtDateArchived, dtrecipe);
+            WindowsFormsUtility.SetControlBinding(lblDatePublished, dtrecipe);
+            WindowsFormsUtility.SetControlBinding(lblDateArchived, dtrecipe);
             WindowsFormsUtility.SetControlBinding(lblRecipeStatus, dtrecipe);
             //lblFirstName.DataBindings.Add("Text", dt, "FirstName");
             //lblLastName.DataBindings.Add("Text", dt, "LastName");
