@@ -106,9 +106,11 @@
             tblRecipe.SetColumnSpan(tsMain, 2);
             tsMain.Dock = DockStyle.Fill;
             tsMain.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            tsMain.ImageScalingSize = new Size(24, 24);
             tsMain.Items.AddRange(new ToolStripItem[] { btnSave, toolStripSeparator1, btnDelete, toolStripSeparator2 });
             tsMain.Location = new Point(0, 0);
             tsMain.Name = "tsMain";
+            tsMain.Padding = new Padding(0, 0, 2, 0);
             tsMain.Size = new Size(546, 32);
             tsMain.TabIndex = 3;
             tsMain.Text = "toolStrip1";
